@@ -136,7 +136,7 @@ class AdController extends AbstractController
 
     /**
      * Montre une annonce
-     * @Route("/show",name="ad_show")
+     * @Route("/ads/{slug}/show",name="ad_show")
      * @return response
      */
 
