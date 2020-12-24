@@ -7,13 +7,13 @@ use App\Form\AccountType;
 use App\Entity\PasswordUpdate;
 use App\Form\RegistrationType;
 use App\Form\PasswordUpdateType;
-
 use Symfony\Component\Form\FormError;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
@@ -21,6 +21,7 @@ class AccountController extends AbstractController
 {
     /**
      * @Route("/login", name="account_login")
+     
      */
     public function login(AuthenticationUtils $utils): Response
     {
@@ -74,10 +75,10 @@ class AccountController extends AbstractController
 
      /**
       * modification de profile
-      * @Route("/profile",name="account_profile")
+      * @Route("/account/profile",name="account_profile")
       * 
       */
-
+//@IsGranted("ROLE_USER")
       public function profile(Request $request,ObjectManager $manager)
       {
           $user=$this->getUser();
@@ -101,7 +102,7 @@ class AccountController extends AbstractController
        * @Route("/update-pwd",name="account_pwd")
        * @return response
        */
-
+//@IsGranted("ROLE_USER")
        public function updatePwd(Request $request,UserPasswordEncoderInterface $encoder,ObjectManager $manager)
        {
            $pwdUp=new PasswordUpdate();// l'entité créée
@@ -133,4 +134,18 @@ class AccountController extends AbstractController
                'form'=>$form->createView()
            ]);
        }
+
+       /**
+        * Permet d'afficher le profild de l'utilisateur connecté
+        * @Route("/account",name="account_index")
+        * paramConverter("User")
+        * @return response
+        */
+        public function myAccount(){
+            //$em=$this->getDoctrine()->getManager();
+            //$user=$urepo->findOneBy(['firstName']);
+            return $this->render('user/user_index.html.twig',[
+                'user'=>$this->getUser()
+            ]);
+        }
 }
