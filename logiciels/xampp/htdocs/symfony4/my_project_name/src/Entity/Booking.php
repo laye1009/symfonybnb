@@ -2,11 +2,14 @@
 
 namespace App\Entity;
 
-use App\Repository\BookingRepository;
 use Doctrine\ORM\Mapping as ORM;
-
+use Doctrine\ORM\Mapping\PrePersist;
+use App\Repository\BookingRepository;
+use Doctrine\ORM\Mapping\HasLifecycleCallbacks;
+use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity(repositoryClass=BookingRepository::class)
+ * @ORM\HasLifecycleCallbacks()
  */
 class Booking
 {
@@ -31,11 +34,13 @@ class Booking
 
     /**
      * @ORM\Column(type="datetime")
+     * @Assert\Date(message="la date d'arrivée doit être au bon format")
      */
     private $startDate;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Assert\Date()
      */
     private $endDate;
 
@@ -53,6 +58,67 @@ class Booking
      * @ORM\Column(type="text", nullable=true)
      */
     private $comment;
+    /**
+     * Callback appelé à chaque fois que l'on crée une réservation
+     * @ORM\PrePersist
+     */
+
+    // Pour le calcul du montant d'une annonce
+    public function prePersist(){
+        if(empty($this->createdAt)){
+            $this->createdAt = new \DateTime();
+        }
+
+        if(empty($this->amount)){
+            //prix de l'annonce
+            $this->amount= $this->ad->getPrice() * $this->getDuration();
+        }
+    }
+
+    public function isBookableDates(){
+        // les dates pas dispo pour une réservation
+        $notAvailableDays=$this->ad->getNotAvailableDays();
+
+        // Il faut comparer les dates chosies avec les dates impossible
+        $bookingDays=$this->getDays();
+        $days=array_map(function($day){
+            return $day->format('Y-m-d');
+        },$bookingDays);
+
+        $notAvaible=array_map(function($day){
+            return $day->format('Y-m-d');
+        },$notAvailableDays);
+
+        foreach($days as $day){
+            if(array_search($day,$notAvailableDays)!==false) return false;
+        }
+        return true;
+
+    }
+
+    /**
+     * Permet de récupérer un tableau des journées qui correspondent à ma réservation
+     * @return array Taleau des objets DateTime des jours de la réservation
+     */
+    public function getDays(){
+
+        $resulat=range($this->startDate->getTimestamp(),
+        $this->endDate->getTimestamp(),
+        24 * 60 * 60);
+
+        $days=array_map(function($dayTimestamp){
+            return new \DateTime(date('Y-m-d',$dayTimestamp));
+        },$resulat);
+
+        return $days;
+    }
+
+    public function getDuration(){
+        $diff = $this->endDate->diff($this->startDate);
+        return $diff->days;
+    }
+
+    //
 
     public function getId(): ?int
     {
