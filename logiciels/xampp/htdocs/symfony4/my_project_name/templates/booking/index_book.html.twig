@@ -15,17 +15,19 @@
             <h2> Commencez par nous dire quelles sont vos dates</h2>
             <div class="row">
                 <div class="col">
+                    {{form_row(form.startDate)}}
+                </div>
+                <div class="col">
                     {{form_row(form.endDate)}}
                 </div>
             </div>
+            <h4> Montant du séjour; <span id="amount">...</span> &euros;</h4>
+            <span id="days">0</span> nuits à {{ad.price}} / nuit
+
+            <h2> Do you have any comment</h2>
+            {{form_row(form.comment)}}
         </div>
 
-        <h4> Montant du séjour; <span id="amount">...</span> &euros;</h4>
-        <span id="days">0</span> nuits à {{ad.price}} / nuit
-
-
-        {{form_row(form.comment)}}
-        <h2> Do you have any comment</h2>
         <h2> Vous avez terminé!</h2>
         <p> Vacances de rêve?</p>
         <button type="submit" class="btn btn-success"> Je reserve</button>
@@ -39,9 +41,11 @@
 {% block javascript %}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.az.min.js"></script>
     <script>
+    /*
         $(document).ready(function(){
             $('#booking_startDate,#booking_endDate').datepicker({
                 format:'dd/mm/yyyy',
+                
                 datesDisabled:[
                     {% for day in ad.notAvailableDays %}
                         "{{day.format('d/m/Y')}}",
@@ -51,8 +55,26 @@
 
 
             });
+
+            $('#booking_endDate,#booking_startDate').on('change',calculateAmount);
                 
         })
+        */
+        function calculAmount(){
+            const endDate=new Date($('#booking_endDate').val().replace(/(\d+)\/(\d+)\/(\d{4})/),'$3-$2-$1'));
+            const startDate=new Date($('#booking_startDate').val().replace(/(\d+)\/(\d+)\/(\d{4})/),'$3-$2-$1'));
+
+            if(startDate && endDate && startDate < endDate){
+                const day_time=24*60*60*1000;
+
+                const interval=endDate.getTime()-startDate.getTime();
+                const days=interval/day_time;
+                const amount=days * {{ad.price}};
+
+                $('#days').text(days);
+                $('#amount').text(amount.toLocalString('fr-Fr'));
+            }
+        }
     </script>
 {% endblock %}
 

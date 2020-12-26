@@ -7,7 +7,6 @@ use App\Entity\Booking;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\FormBuilderInterface;
-use App\Form\DataTransformers\FrenchToDateTransformer;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -29,15 +28,17 @@ class BookingType extends AbstractType
     {
         
         $builder
-            //->add('startDate',DateType::class,["widget"=>"single_text"])
-            //->add('endDate',DateType::class,["widget"=>"single_text"])
+            ->add('startDate',DateType::class,["widget"=>"single_text"])
+            ->add('endDate',DateType::class,["widget"=>"single_text"])
+            ->add('comment',TextareaType::class,["required"=>false]);
+        /*
             ->add('startDate',TextType::class)
             ->add('endDate',TextType::class)
             ->add('comment',TextareaType::class,["required"=>false]);
-/*
+
         $builder->get('startDate')->addModelTransformer($this->transformer);
         $builder->get('endDate')->addModelTransformer($this->transformer);
-        */
+        
         $builder->get('startDate')
                 ->addModelTransformer(new CallbackTransformer(
                     function($date) {
@@ -62,6 +63,7 @@ class BookingType extends AbstractType
                         return $date;
                         
                     }));
+                    */
             
     }
 

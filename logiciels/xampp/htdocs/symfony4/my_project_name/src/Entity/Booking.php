@@ -35,12 +35,14 @@ class Booking
     /**
      * @ORM\Column(type="datetime")
      * @Assert\Date(message="la date d'arrivée doit être au bon format")
+     * @Assert\GreaterThan("today",message="")
      */
     private $startDate;
 
     /**
      * @ORM\Column(type="datetime")
      * @Assert\Date()
+     * @Assert\GreaterThan(propertyPath="startDate",message="")
      */
     private $endDate;
 
@@ -85,12 +87,12 @@ class Booking
             return $day->format('Y-m-d');
         },$bookingDays);
 
-        $notAvaible=array_map(function($day){
+        $notAvailable=array_map(function($day){
             return $day->format('Y-m-d');
         },$notAvailableDays);
 
         foreach($days as $day){
-            if(array_search($day,$notAvailableDays)!==false) return false;
+            if(array_search($day,$notAvailable)!==false) return false;
         }
         return true;
 

@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} Vos réservations passées {% endblock %}
+
+{% for booking in app.user.bookings %}
+    <div class="row mt-5">
+        <div class="col-4">
+            <img src="{{booking.ad.coverImage}}" class="img-fluid">
+        </div>
+        <div class="col-8">
+            <h4>{{booking.ad.title}}
+            <p>
+                Reservation <strong> numero {{booking.id}}</strong>
+                du {{booking.startDate | date('d:m/Y')}} au 
+                {{booking.startDate | date('d:m/Y')}}
+            </p>
+            <a href="path({{'booking_show',{'id':booking.id})}}" class="btn btn-info">
+            plus d'infos</a>
+        </div>
+    </div>
+
+{% endfor %}
