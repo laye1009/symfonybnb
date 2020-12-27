@@ -60,8 +60,64 @@
                     <span class="visually-hidden">Next</span>
                 </a>
             </div>
+            {# les commentaire et notes des annonces #}
+            <hr>
+
+            {% if ad.comments | length>0 %}
+                <h2 class="mb-3">Commentaires de nos voyageurs</h2>
+                <div class="alert alert-info">
+                    <h4 class="alert-heading text-center">
+                        <div class="row align-item-center">
+                            <div class="col">
+                                Note globale donnée par nos voyageurs <br>
+                                <small>Cette moyenne est </small>
+                            </div>
+                                {% include 'shared/rating.html.twig' with {'rating': {{ad.avgRating}} %}
+
+                            <div class="col">
+                            
+                            </div>
+                        </div>
+                    </h4>
+                </div>
+                {% for comment in ad.comments %}
+                    <div class="bg-light rounded mb-3 py-3 px-3">
+                        <strong>{{comment.author.fullName}} a dit:
+                        <blockquote>
+                            {{comment.content}}
+                        </blockquote>
+                        Note donnée par: <strong>{{comment.author.fullName}} </strong> est: 
+                        {{comment.rating}}
+                      
+                        {% include 'shared/rating.html.twig' with {'rating':comment.rating %}
+
+                        <span class="rating">
+                            {% for i in 1..5 %}
+                                {% if i <=comment.rating %}
+                                    <i class="fas fa-star"></i>
+                                {% else %}
+                                    <i class="far fa-star"></i>
+
+                                {% endif %}
+                            {% endfor %}
+
+                        <span>  
+
+                        
+
+                        
+                    </div>
+
+                {% endfor %}
+
+            {% else %}
+                <h2>Cette annonce n'a pas encore de commentaires</h2>
+            {% endif %}
+
+
+        
         </div>
-{##}
+{# #}
         <div class="col">
             {% set a=ad.author %}
             <div class="row mb-3 align-items-center">
@@ -101,11 +157,11 @@
                 <div class="col-9">
                     <h1>{{user.fullName}}</h1>
 
-                    {%% if user is same as(app.user)}
+                    {% if user is same as(app.user) %}
 
                         <div class="mt-3">
-                            <a href="{{path('account_profile')}} class="btn btn-primary mr-2 mb-2> Modifier mes informations </a>
-                            <a href="{{path('account_pwd')}} class="btn btn-primary mr-2 mb-2> Modifier mon mot de passe </a>
+                            <a href= "{{path('account_profile')}}" class="btn btn-primary mr-2 mb-2"> Modifier mes informations </a>
+                            <a href= "{{path('account_pwd')}}" class="btn btn-primary mr-2 mb-2"> Modifier mon mot de passe </a>
                         </div>
                 </div>
             </div>
