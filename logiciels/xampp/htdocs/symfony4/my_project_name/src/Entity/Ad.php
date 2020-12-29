@@ -98,13 +98,37 @@ class Ad
         }
     }
 
+    /**
+     * Permet de récupérer le commentaire s'un utilisateur par rapport à une annonce
+     * @param User $user
+     * @return comment|null
+     */
+
+    public function getCommentFromAuthor(User $user){
+        foreach($this->comments as $comment){
+            if($comment->getAuthor===$user){
+                return $comment;
+            }
+            return null;
+
+        }
+    }
+
+    /**
+     *
+     * 
+     */
+
     public function getAvgRating(){
         //calcul de ka somme des notations
         $sum=array_reduce($this->comments->toArray(),function($total,$comment){
             return $total+$comment->getRating();
         },0);
 
-        if(count($this->comment >0)) $moyenne=$sum/count($this->comments);
+        if(count($this->comments >0)){
+            $moyenne=$sum/count($this->comments);
+            return (int)$moyenne;
+        }
         return 0;
     }
 

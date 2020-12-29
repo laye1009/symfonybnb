@@ -4,7 +4,9 @@ namespace App\Controller;
 
 use App\Entity\Ad;
 use App\Entity\Booking;
+use App\Entity\Comment;
 use App\Form\BookingType;
+use App\Form\CommentType;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -62,9 +64,19 @@ class BookingController extends AbstractController
      * @return Response
      */
     
-    public function book_show(Booking $booking){
+    public function book_show(Booking $booking,Request $request,ObjectManager $manager){
+        $comment=new Comment();
+        $form=$this->createForm(CommentType::class,$comment);
+        $form->handleRequest($request);
+        if($form->isSubmitted() && $form->isValid()){
+            $comment->setAd($booking->getAd())
+                    ->setAuthor($this->getUser());
+            $manager->persist($comment);
+        $manager->flush();
+        }
         return $this->render('booking/book_show.html.twig',[
-            'booking'=>$booking
+            'booking'=>$booking,
+            'form'=>$form->createView()
         ]);
     }
 }

@@ -35,7 +35,7 @@ class Booking
     /**
      * @ORM\Column(type="datetime")
      * @Assert\Date(message="la date d'arrivée doit être au bon format")
-     * @Assert\GreaterThan("today",message="")
+     * @Assert\GreaterThan("today",message="",groups={"front"})
      */
     private $startDate;
 
@@ -63,6 +63,8 @@ class Booking
     /**
      * Callback appelé à chaque fois que l'on crée une réservation
      * @ORM\PrePersist
+     * @ORM\PreUpdate
+     * @return void
      */
 
     // Pour le calcul du montant d'une annonce

@@ -71,6 +71,10 @@ class BookingType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Booking::class,
+            'calidation_groups'=>[
+                'Default',
+                'front'
+            ]
         ]);
     }
 }
