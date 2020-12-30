@@ -33,7 +33,7 @@ class Pagination{
         $this->templatePath=$templatePath;
         return $this;
     }
-    // definition de la valeur de templatePath dans le fichier security.yaml
+    // definition de la valeur de templatePath dans le fichier conf/service.yaml
     public function getTemplatePath(){
         return $this->templatePath;
 

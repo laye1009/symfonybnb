@@ -1,4 +1,4 @@
-div.container{
+.container, .container-fluid{
     margin-top:20px;
 }
 
