@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Repository\AdRepository;
 use App\Service\StatsService;
 use App\Repository\UserRepository;
 use Doctrine\Persistence\ObjectManager;
@@ -17,11 +18,13 @@ class AdminDashboardController extends AbstractController
      * @Route("/admin/dash", name="admin_dashboard")
      */
     //public function index(ObjectManager $manager, UserRepository $repo,StatsService $stats): Response
-    public function index(ObjectManager $manager,UserRepository $repo): Response
+    public function index(ObjectManager $manager,UserRepository $repo,AdRepository $arepo): Response
     {
         
         $tot=count($repo->findAll());
         echo $tot;
+
+        
 
         
         return $this->render('admin/dashboard/dash_index.html.twig'
