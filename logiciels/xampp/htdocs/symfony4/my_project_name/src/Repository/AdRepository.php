@@ -21,7 +21,7 @@ class AdRepository extends ServiceEntityRepository
 
     public function findBestAds($limit){
         return $this->createQueryBuilder('a')
-                    ->select('AVG(c.rating) as avgRating')
+                    ->select('AVG(c.rating) as avgRating,a.title,a.picture,a.lastName,a.firstName')
                     ->join('a.comments','c')
                     ->groupBy('a')
                     ->orderBy('avgRating','DESC')

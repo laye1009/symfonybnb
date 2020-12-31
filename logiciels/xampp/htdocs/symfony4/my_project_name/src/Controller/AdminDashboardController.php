@@ -20,14 +20,34 @@ class AdminDashboardController extends AbstractController
     //public function index(ObjectManager $manager, UserRepository $repo,StatsService $stats): Response
     public function index(ObjectManager $manager,UserRepository $repo,AdRepository $arepo): Response
     {
+
+        //$users=$manager->createQuery('SELECT count(u) FROM App\Entity\Ad u')->getSingleScalarResult();
         
+
+        
+        /*
         $tot=count($repo->findAll());
         echo $tot;
-
+        */
+        //$bestAds=$arepo->findBestAds(5);
+        
+        
+        $bestAds=$manager->createQuery(
+            'SELECT AVG(c.rating) as note, a.title,a.id, u.firstName, u.lastName, u.picture
+            FROM App\Entity\Comment c
+            JOIN c.ad a
+            JOIN a.author u
+            GROUP BY a
+            ORDER BY note DESC'
+        )->setMaxResults(5)->getResult();
         
 
         
-        return $this->render('admin/dashboard/dash_index.html.twig'
+
+        
+        return $this->render('admin/dashboard/dash_index.html.twig',[
+            'bestAds'=>$bestAds
+        ]
 
         //,['stats'=>compact('users','bookings','comments')
         //bestAds=$bestAds
